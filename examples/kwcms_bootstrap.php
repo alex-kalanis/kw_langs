@@ -22,6 +22,8 @@ $defaultLang = \kalanis\kw_confs\Config::get('Core', 'page.default_lang', 'hrk')
 \kalanis\kw_langs\Lang::init($paths, $defaultLang);
 \kalanis\kw_langs\Lang::load('Core'); // autoload core lang
 
+session_start();
+
 // pass parsed params as external source
 $source = new \kalanis\kw_input\Sources\Basic();
 $source->setCli($argv)->setExternal($params->getParams()); // argv is for params from cli

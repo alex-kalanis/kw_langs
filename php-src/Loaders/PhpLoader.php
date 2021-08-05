@@ -3,7 +3,7 @@
 namespace kalanis\kw_langs\Loaders;
 
 
-use kalanis\kw_langs\Exception;
+use kalanis\kw_langs\LangException;
 use kalanis\kw_langs\Interfaces\ILoader;
 use kalanis\kw_paths\Interfaces\IPaths;
 use kalanis\kw_paths\Path;
@@ -41,19 +41,19 @@ class PhpLoader implements ILoader
     public function load(string $module, string $lang): array
     {
         $path = $this->contentPath($module, $lang);
-        return (!empty($path)) ? $this->includedLang($path, $lang) : [];
+        return (!empty($path)) ? $this->includedLang($path) : [];
     }
 
     /**
      * @param string $module
      * @param string $lang
      * @return string|null
-     * @throws Exception
+     * @throws LangException
      */
     public function contentPath(string $module, string $lang): ?string
     {
         if (empty($this->pathLib)) {
-            throw new Exception('Need to set Path library first!');
+            throw new LangException('Need to set Path library first!');
         }
         $basicLookupDir = $this->pathLib->getDocumentRoot() . $this->pathLib->getPathToSystemRoot();
         foreach ($this->pathMasks as $pathMask) {
@@ -70,10 +70,10 @@ class PhpLoader implements ILoader
         return null;
     }
 
-    protected function includedLang(string $path, string $which): array
+    protected function includedLang(string $path): array
     {
         $lang = [];
         include_once ($path);
-        return (isset($lang[$which]) && is_array($lang[$which])) ? $lang[$which] : (array)$lang;
+        return (array)$lang;
     }
 }

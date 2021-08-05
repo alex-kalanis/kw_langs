@@ -8,6 +8,6 @@ namespace kalanis\kw_langs;
  * @package kalanis\kw_langs
  * When something fails in lang system...
  */
-class Exception extends \Exception
+class LangException extends \Exception
 {
 }

@@ -3,6 +3,7 @@
 namespace kalanis\kw_langs;
 
 
+use kalanis\kw_langs\Interfaces\ILang;
 use kalanis\kw_langs\Interfaces\ILoader;
 use kalanis\kw_paths\Path;
 use kalanis\kw_paths\Stuff;
@@ -50,7 +51,18 @@ class Lang
 
     public static function load(string $module): void
     {
-        static::$translations = array_merge(static::$translations, static::$loader->load($module, static::$usedLang));
+        static::loadData(static::$usedLang, static::$loader->load($module, static::$usedLang));
+    }
+
+    public static function loadClass(ILang $lang): void
+    {
+        static::loadData(static::$usedLang, $lang->getTranslations());
+    }
+
+    protected static function loadData(string $lang, array $translations): void
+    {
+        $translations = (isset($translations[$lang]) && is_array($translations[$lang])) ? $translations[$lang] : $translations;
+        static::$translations = array_merge(static::$translations, $translations);
     }
 
     public static function get(string $key, ...$pass): string

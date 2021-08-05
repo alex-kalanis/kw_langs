@@ -4,6 +4,7 @@ namespace BasicTests;
 
 
 use CommonTestClass;
+use kalanis\kw_langs\Interfaces\ILang;
 use kalanis\kw_langs\Interfaces\ILoader;
 use kalanis\kw_langs\Lang;
 use kalanis\kw_paths\Path;
@@ -26,7 +27,21 @@ class LangTest extends CommonTestClass
         $this->assertEquals('vwx123', Lang::get('jkl', '123'));
         $this->assertEquals('asdf123', Lang::get('asdf%s', '123'));
 
-        $this->assertInstanceOf('\kalanis\kw_langs\Loaders\PhpLoader', Lang::getLoader());
+        $this->assertInstanceOf('\kalanis\kw_langs\Interfaces\ILoader', Lang::getLoader());
+    }
+
+    public function testClass(): void
+    {
+        $path = new Path();
+        $path->setDocumentRoot('/tmp/none');
+        Lang::init($path, 'bar', new XLoader());
+        Lang::loadClass(new XLang());
+        $this->assertEquals('bar', Lang::getLang());
+
+        $this->assertEquals('65stu', Lang::get('ghi56'));
+        $this->assertEquals('ewq', Lang::get('ewq', 'lkj'));
+        $this->assertEquals('43vwx123', Lang::get('jkl78', '123'));
+        $this->assertEquals('asdf123', Lang::get('asdf%s', '123'));
     }
 
     public function testLangsInPath(): void
@@ -76,3 +91,18 @@ class XLoader implements ILoader
         ];
     }
 }
+
+
+class XLang implements ILang
+{
+    public function getTranslations(): array
+    {
+        return [
+            'abc12' => '09mno',
+            'def34' => '87pqr',
+            'ghi56' => '65stu',
+            'jkl78' => '43vwx%s',
+        ];
+    }
+}
+

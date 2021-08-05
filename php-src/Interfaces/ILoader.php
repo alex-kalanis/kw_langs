@@ -3,7 +3,7 @@
 namespace kalanis\kw_langs\Interfaces;
 
 
-use kalanis\kw_langs\Exception;
+use kalanis\kw_langs\LangException;
 
 
 /**
@@ -17,7 +17,7 @@ interface ILoader
      * @param string $module which module it will be looked for
      * @param string $lang which lang name will be looked for
      * @return string[] translations array
-     * @throws Exception
+     * @throws LangException
      */
     public function load(string $module, string $lang): array;
 }
