@@ -5,6 +5,7 @@
   "source": "https://github.com/alex-kalanis/kw_langs",
   "license": "BSD-3-Clause",
   "require": {
+    "alex-kalanis/kw_paths": ">=1.0",
     "php": ">=7.2.0"
   },
   "suggest": {
