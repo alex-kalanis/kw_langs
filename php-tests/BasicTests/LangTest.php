@@ -26,6 +26,8 @@ class LangTest extends CommonTestClass
         $this->assertEquals('ewq', Lang::get('ewq', 'lkj'));
         $this->assertEquals('vwx123', Lang::get('jkl', '123'));
         $this->assertEquals('asdf123', Lang::get('asdf%s', '123'));
+        $this->assertEquals('asdf%s', Lang::get('asdf%s'));
+        $this->assertEquals('123%s456', Lang::get('yz0'));
 
         $this->assertInstanceOf('\kalanis\kw_langs\Interfaces\ILoader', Lang::getLoader());
     }
@@ -78,16 +80,14 @@ class LangTest extends CommonTestClass
 
 class XLoader implements ILoader
 {
-    protected $lang = '';
-
     public function load(string $module, string $lang): array
     {
-        $this->lang = $lang;
         return [
             'abc' => 'mno',
             'def' => 'pqr',
             'ghi' => 'stu',
             'jkl' => 'vwx%s',
+            'yz0' => '123%s456',
         ];
     }
 }
