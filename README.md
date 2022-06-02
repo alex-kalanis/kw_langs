@@ -7,7 +7,7 @@ Define used translations inside the KWCMS tree. Parse them and return them.
 ```
 {
     "require": {
-        "alex-kalanis/kw_langs": "1.0"
+        "alex-kalanis/kw_langs": "2.0"
     }
 }
 ```
