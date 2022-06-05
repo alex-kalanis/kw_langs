@@ -18,23 +18,27 @@ $params = new \kalanis\kw_paths\Params\Request\Server();
 $params->set($virtualDir)->process();
 $paths->setData($params->getParams());
 
+session_start();
+
+// pass parsed params as external source
+$source = new \kalanis\kw_input\Sources\Basic();
+$source->setCli($argv ?: [])->setExternal($params->getParams()); // argv is for params from cli
+$inputs = new \kalanis\kw_input\Inputs();
+$inputs->setSource($source)->loadEntries();
+$session = new \kalanis\kw_input\Simplified\SessionAdapter();
+
 // init langs - the similar way like configs, but it's necessary to already have loaded params
 \kalanis\kw_langs\Lang::init(
     new \kalanis\kw_langs\Loaders\PhpLoader($paths),
     \kalanis\kw_langs\Support::fillFromPaths(
         $paths,
-        \kalanis\kw_confs\Config::get('Core', 'page.default_lang', 'hrk'),
+        \kalanis\kw_langs\Support::fillFromArray(
+            $session,
+            \kalanis\kw_confs\Config::get('Core', 'page.default_lang', 'hrk')
+        ),
         false
     )
 );
 \kalanis\kw_langs\Lang::load('Core'); // autoload core lang
-
-session_start();
-
-// pass parsed params as external source
-$source = new \kalanis\kw_input\Sources\Basic();
-$source->setCli($argv)->setExternal($params->getParams()); // argv is for params from cli
-$inputs = new \kalanis\kw_input\Inputs();
-$inputs->setSource($source)->loadEntries();
 
 // And now we have all necessary variables to build the context

@@ -61,6 +61,16 @@ class LangLoaderTest extends CommonTestClass
         $this->assertEquals('ign', Support::fillFromPaths($path, 'ign', false));
     }
 
+    public function testSupportSetter(): void
+    {
+        $store = new \ArrayObject();
+        $this->assertEquals('cas', Support::fillFromArray($store, 'cas'));
+        Support::setToArray($store, '');
+        $this->assertEquals('cas', Support::fillFromArray($store, 'cas'));
+        Support::setToArray($store, 'moa');
+        $this->assertEquals('moa', Support::fillFromArray($store, 'ign'));
+    }
+
     /**
      * @throws LangException
      */
