@@ -42,3 +42,11 @@ $session = new \kalanis\kw_input\Simplified\SessionAdapter();
 \kalanis\kw_langs\Lang::load('Core'); // autoload core lang
 
 // And now we have all necessary variables to build the context
+
+// Then in page/framework/whatever
+
+/// for ['your internal key' => 'output is %s, on %d']
+print \kalanis\kw_langs\Lang::get('your internal key', 'first param', 2);
+/// and it returns 'output is first param, on 2'
+
+// the best usage is inside the translations classes across the other modules - you just fill Lang::get() with your key

@@ -14,7 +14,7 @@ use kalanis\kw_langs\Interfaces\ILoader;
  */
 class ClassLoader implements ILoader
 {
-    /** @var ILang[] */
+    /** @var array<string, ILang> */
     protected $langs = [];
 
     public function addClass(ILang $lang): self
