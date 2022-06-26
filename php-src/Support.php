@@ -39,9 +39,11 @@ class Support
         if ($moreLangs && !empty($path->getPath())) {
             $trace = Stuff::pathToArray($path->getPath());
             $firstDir = reset($trace);
-            $length = strlen($firstDir);
-            if ((1 < $length) && (4 > $length)) { // two-letter "en", three letter "eng"
-                return $firstDir;
+            if (false !== $firstDir) {
+                $length = strlen($firstDir);
+                if ((1 < $length) && (4 > $length)) { // two-letter "en", three letter "eng"
+                    return $firstDir;
+                }
             }
         }
         return $defaultLang;
