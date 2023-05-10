@@ -16,6 +16,11 @@ class Support
 {
     const LANG_KEY = 'lang';
 
+    /**
+     * @param ArrayAccess<string, mixed> $array
+     * @param string|null $defaultLang
+     * @return string|null
+     */
     public static function fillFromArray(ArrayAccess $array, ?string $defaultLang): ?string
     {
         return $array->offsetExists(static::LANG_KEY)
@@ -25,6 +30,10 @@ class Support
             : $defaultLang ;
     }
 
+    /**
+     * @param ArrayAccess<string, string> $array
+     * @param string $lang
+     */
     public static function setToArray(ArrayAccess $array, string $lang): void
     {
         $array->offsetSet(static::LANG_KEY, $lang);

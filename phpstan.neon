@@ -10,9 +10,9 @@ parameters:
 		- 'php-tests/CommonTestClass.php'
 	bootstrapFiles:
 		- 'php-tests/_bootstrap.php'
-	checkGenericClassInNonGenericObjectType: false
-#	ignoreErrors:
-#		-
-#			message: '#expects resource, resource\|null given\.#'
-#			path: 'php-src/Simple/Memory.php'
-#			# quality WTF - already covered in that "exists" check
+#	checkGenericClassInNonGenericObjectType: false
+	ignoreErrors:
+		-
+			message: '#of function strval expects bool\|float\|int\|resource\|string\|null, mixed given\.#'
+			path: 'php-src/Lang.php'
+			# quality WTF - cannot return something which cannot be processed via strval()
