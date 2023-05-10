@@ -13,6 +13,9 @@ use kalanis\kw_langs\Loaders\MultiLoader;
 use kalanis\kw_langs\Loaders\PhpLoader;
 use kalanis\kw_langs\Support;
 use kalanis\kw_paths\Path;
+use kalanis\kw_paths\PathsException;
+use kalanis\kw_routed_paths\RoutedPath;
+use kalanis\kw_routed_paths\Sources as routeSource;
 
 
 class LangLoaderTest extends CommonTestClass
@@ -29,36 +32,53 @@ class LangLoaderTest extends CommonTestClass
 
     /**
      * @throws LangException
+     * @throws PathsException
      */
     public function testGetRealFile(): void
     {
         $path = new Path();
         $path->setDocumentRoot(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
-        $path->setData(['lang' => 'fra']);
-        Lang::init(new PhpLoader($path), Support::fillFromPaths($path, 'hrk', true));
+        $routed = new RoutedPath(new routeSource\Arrays(['lang' => 'fra']));
+        Lang::init(new PhpLoader($path, $routed), Support::fillFromPaths($routed, 'hrk', true));
         Lang::load('dummy');
         $this->assertEquals('Alors quoi?', Lang::get('dashboard.page'));
     }
 
     /**
      * @throws LangException
+     * @throws PathsException
      */
     public function testGetNoFile(): void
+    {
+        $path = new Path();
+        $path->setDocumentRoot(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
+        $routed = new RoutedPath(new routeSource\Arrays(['lang' => 'fra']));
+        Lang::init(new PhpLoader($path, $routed), Support::fillFromPaths($routed, 'hrk', true));
+        Lang::load('unknown');
+        $this->assertEquals('some.page', Lang::get('some.page'));
+    }
+
+    /**
+     * @throws LangException
+     */
+    public function testGetNoTranslate(): void
     {
         Lang::init(new XYLoader(), 'hrk');
         Lang::load('unknown');
         $this->assertEquals('**really-not-existing', Lang::get('**really-not-existing'));
     }
 
+    /**
+     * @throws PathsException
+     */
     public function testSupport(): void
     {
-        $path = new Path();
-        $path->setDocumentRoot(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
-        $path->setData(['lang' => 'hrk']);
-        $this->assertEquals('hrk', Support::fillFromPaths($path, 'cas', true));
-        $path->setData(['lang' => '', 'path' => 'cas/off/nope']);
-        $this->assertEquals('cas', Support::fillFromPaths($path, 'ign', true));
-        $this->assertEquals('ign', Support::fillFromPaths($path, 'ign', false));
+        $routed1 = new RoutedPath(new routeSource\Arrays(['lang' => 'hrk']));
+        $this->assertEquals('hrk', Support::fillFromPaths($routed1, 'cas', true));
+
+        $routed2 = new RoutedPath(new routeSource\Arrays(['lang' => '', 'path' => 'cas/off/nope']));
+        $this->assertEquals('cas', Support::fillFromPaths($routed2, 'ign', true));
+        $this->assertEquals('ign', Support::fillFromPaths($routed2, 'ign', false));
     }
 
     public function testSupportSetter(): void
@@ -76,10 +96,6 @@ class LangLoaderTest extends CommonTestClass
      */
     public function testMultiLoader(): void
     {
-        $path = new Path();
-        $path->setDocumentRoot(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
-        $path->setData(['lang' => 'hrk']);
-
         // init multi
         $lib = new MultiLoader();
         Lang::init($lib, 'hrk');
@@ -99,10 +115,6 @@ class LangLoaderTest extends CommonTestClass
      */
     public function testClassLoader(): void
     {
-        $path = new Path();
-        $path->setDocumentRoot(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data');
-        $path->setData(['lang' => 'hrk']);
-
         // init multi
         $lib = new ClassLoader();
         Lang::init($lib, 'hrk');

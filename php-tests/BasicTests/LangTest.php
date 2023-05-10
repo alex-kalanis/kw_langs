@@ -11,18 +11,23 @@ use kalanis\kw_langs\LangException;
 use kalanis\kw_langs\Loaders\PhpLoader;
 use kalanis\kw_langs\Support;
 use kalanis\kw_paths\Path;
+use kalanis\kw_paths\PathsException;
+use kalanis\kw_routed_paths\RoutedPath;
+use kalanis\kw_routed_paths\Sources as routeSource;
 
 
 class LangTest extends CommonTestClass
 {
     /**
      * @throws LangException
+     * @throws PathsException
      */
     public function testBasic(): void
     {
         $path = new Path();
         $path->setDocumentRoot('/tmp/none');
-        Lang::init(new PhpLoader($path), 'foo');
+        $routed = new RoutedPath(new routeSource\Arrays([]));
+        Lang::init(new PhpLoader($path, $routed), 'foo');
 
         Lang::init(new XLoader(), 'bar');
         Lang::load('baz');
@@ -35,14 +40,18 @@ class LangTest extends CommonTestClass
         $this->assertEquals('asdf%s', Lang::get('asdf%s'));
         $this->assertEquals('123%s456', Lang::get('yz0'));
 
-        $this->assertInstanceOf('\kalanis\kw_langs\Interfaces\ILoader', Lang::getLoader());
+        $this->assertInstanceOf(ILoader::class, Lang::getLoader());
     }
 
+    /**
+     * @throws PathsException
+     */
     public function testClass(): void
     {
         $path = new Path();
         $path->setDocumentRoot('/tmp/none');
-        Lang::init(new PhpLoader($path), Support::fillFromPaths($path, 'bar', false));
+        $routed = new RoutedPath(new routeSource\Arrays([]));
+        Lang::init(new PhpLoader($path, $routed), Support::fillFromPaths($routed, 'bar', false));
         Lang::loadClass(new XLang());
         $this->assertEquals('bar', Lang::getLang());
 
@@ -52,21 +61,25 @@ class LangTest extends CommonTestClass
         $this->assertEquals('asdf123', Lang::get('asdf%s', '123'));
     }
 
+    /**
+     * @throws PathsException
+     */
     public function testLangsInPath(): void
     {
         $path = new Path();
         $path->setDocumentRoot('/tmp/none');
-        $path->setData(['path' => 'abcdef/ghijkl/mnopqrs.tuv']); // nope
-        Lang::init(new PhpLoader($path), Support::fillFromPaths($path, 'bar', true));
+        $routed1 = new RoutedPath(new routeSource\Arrays(['path' => 'abcdef/ghijkl/mnopqrs.tuv'])); // nope - first segment is too long
+        Lang::init(new PhpLoader($path, $routed1), Support::fillFromPaths($routed1, 'bar', true));
         $this->assertEquals('bar', Lang::getLang());
 
-        $path->setData(['path' => 'abc/def/ghijkl/mnopqrs.tuv']); // yep
-        Lang::init(new PhpLoader($path), Support::fillFromPaths($path, 'bar', true));
+        $routed2 = new RoutedPath(new routeSource\Arrays(['path' => 'abc/def/ghijkl/mnopqrs.tuv'])); // yep - only 3 letters in first segment
+        Lang::init(new PhpLoader($path, $routed2), Support::fillFromPaths($routed2, 'bar', true));
         $this->assertEquals('abc', Lang::getLang());
     }
 
     /**
      * @throws LangException
+     * @throws PathsException
      */
     public function testUnderscores(): void
     {
@@ -74,8 +87,8 @@ class LangTest extends CommonTestClass
 
         $path = new Path();
         $path->setDocumentRoot('/tmp/none');
-        $path->setData(['lang' => 'cro']);
-        Lang::init(new PhpLoader($path), Support::fillFromPaths($path, 'bar', false));
+        $routed = new RoutedPath(new routeSource\Arrays(['lang' => 'cro']));
+        Lang::init(new PhpLoader($path, $routed), Support::fillFromPaths($routed, 'bar', false));
         Lang::load('baz');
 
         $this->assertEquals('cro', Lang::getLang());
