@@ -11,15 +11,16 @@
     "license": "BSD-3-Clause",
     "type": "library",
     "require": {
-        "alex-kalanis/kw_paths": ">=3.0 <4",
-        "alex-kalanis/kw_routed_paths": ">=1.0 <3",
-        "php": ">=7.2.0"
+        "alex-kalanis/kw_paths": ">=4.0 <5",
+        "alex-kalanis/kw_routed_paths": ">=3.0 <4",
+        "php": ">=7.4.0"
     },
     "require-dev": {
+        "shipmonk/composer-dependency-analyser": "^1.4",
         "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": ">=7.2 <=9"
+        "phpunit/phpunit": ">=8.0 <=9"
     },
     "suggest": {
     },

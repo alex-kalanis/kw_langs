@@ -32,6 +32,16 @@ class LangLoaderTest extends CommonTestClass
 
     /**
      * @throws LangException
+     */
+    public function testNoLoader(): void
+    {
+        Lang::init(null, 'not important');
+        $this->expectException(LangException::class);
+        Lang::load('anything here will die');
+    }
+
+    /**
+     * @throws LangException
      * @throws PathsException
      */
     public function testGetRealFile(): void
